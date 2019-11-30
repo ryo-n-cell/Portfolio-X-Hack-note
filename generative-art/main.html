@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Generative Art</title>
+  </head>
+
+  <body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      const BALL_NUM = 100;
+      let balls = [];
+
+      for (let i = 0; i < BALL_NUM; i++) {
+        let x = 200;
+        let y = 200;
+        let speed_x = getRandomInt(10) - 5;
+        let speed_y = getRandomInt(10) - 5;
+        let radius = getRandomInt(30);
+        let color = getColor();
+        balls.push(new BallObject(x, y, speed_x, speed_y, radius, color));
+      }
+
+        // 色をrgb形式で返す関数
+        function getColor() {
+        const colorInt = 96; // rgb は 0 ~ 255 の数値を取る
+        let red = getRandomInt(colorInt);
+        let green = getRandomInt(colorInt);
+        let blue = getRandomInt(colorInt);
+        return `rgb(${red}, ${green}, ${blue})`;
+      }
+
+      // 引数maxの値までのランダムな値を返す関数
+      function getRandomInt(max) {
+        let num = Math.random() * max;
+        return Math.floor(num);
+      }
+
+      // setInterval(ball.move, 100); ball.move が globalオブジェクトに登録されてしまう
+      setInterval(() => {
+        // 全てのボールの位置を移動させる
+        for (let i = 0; i < BALL_NUM; i++) {
+          balls[i].move();
+        }
+        // 背景を塗りつぶす処理
+        ctx.globalCompositeOperation = "source-over";
+        ctx.fillStyle = "rgba(8,8,12,.2)";
+        ctx.fillRect(0, 0, 400, 400);
+      }, 100);
+
+      function BallObject(x, y, x_speed, y_speed, radius, color) {
+        this.x = x;
+        this.y = y;
+        this.x_speed = x_speed;
+        this.y_speed = y_speed;
+        this.radius = radius;
+        this.color = color;
+
+        this.move = function() {
+          // 移動スピードを閾値をまたいだら、反転させることで跳ね返りを表現している
+          if (this.x > 400 || this.x < 0) {
+            // this.x_speed = this.x_speed * -1;
+            this.x_speed *= -1;
+          }
+          if (this.y > 400 || this.y < 0) {
+            this.y_speed *= -1;
+          }
+
+          this.x = this.x + this.x_speed;
+          this.y = this.y + this.y_speed;
+          this.drawCircle(this.x, this.y, this.radius, this.color);
+        };
+
+        this.drawCircle = function(x, y, radius, color) {
+          ctx.globalCompositeOperation = "lighter";
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+          ctx.fill();
+        };
+      }
+
+
+    </script>
+  </body>
+</html>

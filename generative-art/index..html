@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="jp">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#FF0000";
+      ctx.fillRect(20, 20, 150, 100);
+
+      for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+          let r = getRandomInt(255);
+          let g = getRandomInt(255);
+          let b = getRandomInt(255);
+          ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+          ctx.fillRect(i * 50, j * 50, 50, 50);
+        }
+      }
+
+      function getRandomInt(max) {
+        let num = Math.random() * max;
+        return Math.floor(num);
+      }
+    </script>
+  </body>
+</html>
