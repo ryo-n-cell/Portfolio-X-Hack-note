@@ -1,0 +1,29 @@
+.sample-box {
+  position: relative;
+}
+
+.sample-box img {
+  width: 100%;
+  height: 200px;
+}
+
+.favorite {
+  width: 40px;
+  height: 40px;
+  color: #db197452;
+  background-color: #f8c3d9dc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.on {
+  color: #f80376;
+}
