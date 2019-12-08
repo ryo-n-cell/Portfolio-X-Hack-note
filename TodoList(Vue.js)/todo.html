@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>ToDoリスト</title>
+    <style>
+      .done{
+      text-decoration: line-through;
+      color :#bbb;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container" id="todo">
+      <h4>
+          <button @click="purge">Purge</button>
+          ToDoリスト
+          <span class="info">({{ remaining.length }}/{{ todoList.length }})</span>
+      </h4>
+      <section class="panel">
+        <input type="text" class="text-input" v-model="inputData"　@keyup.enter="addtodo"/>
+        <button @click="addtodo">追加</button>
+      </section>
+      <ul class="list">
+        <li v-for="item in todoList" >
+          <input type="checkbox" class="checkbox" v-model=item.isDone>
+          <span :class="{done: item.isDone}">{{ item.title }}</apan>
+          <button for="delete" @click="remove">削除</button>
+        </li>
+        <li v-show="!todoList.length">リストを追加しましょう！</li>
+      </ul>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+      //Create a new Vue instance
+      var vm = new Vue({
+        el: "#todo",
+        data: {
+          inputData: "first",
+          todoList: [],
+        },
+        watch:{
+            // todos: function(){
+            //     localStorage.setItem("todos", JSON.stringify(this.todos));
+            //     alert("Data Saves");
+            // }
+          todoList:{
+              handler: function(){
+              localStorage.setItem("todoList", JSON.stringify(this.todoList));
+              },
+              deep: true,
+            }
+        },
+        mounted:function(){
+          this.todoList = JSON.parse(localStorage.getItem("todoList")) || [];
+        },
+        methods: {
+          //if
+          addtodo: function() {
+            let item = {
+                title: this.inputData,
+                isDone:false
+            }
+            if(this.inputData == ""){
+              alert("文字を入力してください！");
+              return;
+            }else if(this.inputData.length >30){
+              alert("30字以内で入力してください!")
+              this.inputData =""
+              return;
+            }
+            this.todoList.push(item);
+            this.inputData =""
+            },
+          //削除ボタンを押したときの処理
+          remove: function() {
+            this.todoList.splice(this.item,1);
+          },
+          purge: function(){
+            if(!confirm("チェックしたリストを消しますか？")){
+                return;
+            }
+            // this.todos = this.todos.filter(function(todo){
+            // return !todo.isDone;
+            // });
+            this.todoList = this.remaining
+          },
+        },
+        computed:{
+          remaining: function(){
+            return this.todoList.filter(function(item){
+              return !item.isDone; 
+            });
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
+
+
+<!-- 
+できたこと。
+// ・テキストなしでクリックしたらアラートを出す 
+// ・30文字以上ならばアラートを出す
+//　・リストなしの状態の時、メッセージを出す（v-show）
+//　・完了の状態を数値で表す(チェックしたリストの数/全リスト)
+// ・v-on:keyup.enter="addtodo"でエンターキーのみでメソッド呼び出し
+// ・削除でクリックした文を消したい 
+    →v-on:click="remove"で削除
+// ・チェックリストを入れたらＣＳＳを変化させる　
+// →Vueクラスの変更を使い色を変化させる。
+// →チェックボックスでクラススタイルのバインディングを行いCSSの切り替えを行う
+// ・ローカルストレージを使いリストを保存する
+
+これからやること
+//　・見た目を整えるために、機能を全て完備した後CSSとブートストラップで整える
+//　・Todoの追加リストをコンポーネントの形にする（あとで）
+ -->
