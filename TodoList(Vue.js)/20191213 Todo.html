@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Todo_list</title>
+</head>
+
+<body>
+    <div class="filters" id="todo">
+        <section class="panel">
+            <label><input type="radio" name="switching" href="#/all" value="all" checked="checked" v-model="filter">全て</label>
+            <label><input type="radio" name="switching" href="#/remaining" value="remaining" v-model="filter">作業中</label>
+            <label><input type="radio" name="switching" href="#/complete" value="complete" v-model="filter">完了</label>
+            <span class="display">{{  }}件を表示</span>
+            <span
+                class="info">(全てのリスト{{ todoList.length }}/残りリスト{{ remaining.length }}/完了リスト{{ complete.length }})</span>
+        </section>
+        <ul class="list" style="list-style: none;">
+            <p class="head">ID コメント 状態</p>
+            <hr>
+            <!-- v-show="allList" -->
+            <li v-for="(item, index) in todoList">
+                <span class="index">{{ index }}</apan>
+                    <span class="comment">{{ item.comment }}</apan>
+                        <button class="status" @click="done(index)" v-if="item.isDone">完了</button>
+                        <button class="status" @click="done(index)" v-else>作業中</button>
+                        <button class="delete" @click="remove(index)">削除</button>
+            </li>
+            <p>実行中リスト</p>
+            <!-- v-show="remainingList" -->
+            <li v-for="(item, index) in remaining">
+                <span class="index">{{ index }}</apan>
+                    <span class="comment">{{ item.comment }}</apan>
+                        <button class="status" @click="done(index)" v-if="item.isDone">完了</button>
+                        <button class="status" @click="done(index)" v-else>作業中</button>
+                        <button class="delete" @click="remove(index)">削除</button>
+            </li>
+            <p>完了リスト</p>
+            <!-- v-show="completeList" -->
+            <li v-for="(item, index) in complete">
+                <span class="index">{{ index }}</apan>
+                    <span class="comment">{{ item.comment }}</apan>
+                        <button class="status" @click="done(index)" v-if="item.isDone">完了</button>
+                        <button class="status" @click="done(index)" v-else>作業中</button>
+                        <button class="delete" @click="remove(index)">削除</button>
+            </li>
+
+            <p>※削除ボタンはコントロールキーを押しながらクリックしてください</p>
+        </ul>
+        <h1>新しい作業の追加</h1>
+        <p>コメント
+            <input type="text" class="text-input" v-model="inputData" />
+            <button @click="addtodo">追加</button>
+        </p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        'use strict';
+
+        var vm = new Vue({
+            el: "#todo",
+            data: {
+                inputData: "first",
+                todoList: [
+                    { comment: "テストAです", isDone: false },
+                    { comment: "テストBです", isDone: true },
+                    { comment: "テストCです", isDone: false }
+                ],
+            },
+            methods: {
+                addtodo: function () {
+                    let item = {
+                        comment: this.inputData,
+                        isDone: false
+                    };
+                    this.todoList.push(item);
+                    this.inputData = "";
+                },
+                remove: function (index) {
+                    this.todoList.splice(index, 1);
+                },
+                done: function (index) {
+                    console.log(this.todoList[index].isDone);
+                    this.todoList[index].isDone = !this.todoList[index].isDone
+                },
+                //   allList:function(){},
+                //   remainingList:function(){},
+                //   completeList:function(){}
+            },
+            computed: {
+                remaining: function () {
+                    return this.todoList.filter(function (item) {
+                        return !item.isDone;
+                    });
+                },
+                complete: function () {
+                    return this.todoList.filter(function (item) {
+                        return item.isDone;
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
+
+<!-- 
+    全て・実行中・完了と表示したいリストを分ける
+    ・[OK]３つの配列にオブジェクトを分ける。
+        全て→todoList[] 
+        実行中remaining[]  isDoneがfaulsの時のオブジェクト
+        →remainingでfilterをかけている(this.remaining.length)
+        完了[]　isDoneがtrueの時のオブジェクト(todoList - remaining)
+
+    ・配列ごとに表示するものを呼び出す
+        チェックボックス選択でフィルタリングして選んだリストを表示させる
+        radioにboolean式を搭載してliをv-showでバインドさせて表示させたい？
+    ・表示数を出す
+ -->
